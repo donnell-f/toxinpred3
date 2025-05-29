@@ -103,9 +103,9 @@ peptide.seq	: Example file contain peptide sequences in simple format
 
 ## Installation via PIP
 User can install ToxinPred3 via PIP also
-
+```
 pip install toxinpred3
-
+```
 ## Reference: 
 Rathore AS, Arora A, Choudhury S, Tijare P, Raghava GPS (2024) ToxinPred3.0:An improved method for predicting the toxicity of peptides. 
 Comput Biol Med. 179:108926 . https://doi.org/10.1016/j.compbiomed.2024.108926
