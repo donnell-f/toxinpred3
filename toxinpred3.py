@@ -1,8 +1,10 @@
 ##############################################################################
-#ToxinPred3.0 is developed for predicting toxin and non toxin      #
-#protein from their primary sequence. It is developed by Prof G. P. S.       #
-#Raghava's group. Please cite : ToxinPred 3.0                                  #
-# ############################################################################
+# ToxinPred3.0 is developed for predicting toxin and non toxin               #
+# proteins from their primary sequences. It is developed by Prof G. P. S.    #
+# Raghava's group. Please cite: ToxinPred 3.0                                #
+##############################################################################
+# This fork edited (bug fixes) by Donnell Fulwiler                           #
+##############################################################################
 import argparse  
 import warnings
 import pickle
@@ -64,7 +66,11 @@ def dpc_comp(file,out,q=1):
                     b.upper()
                     if b == temp:
                         count += 1
-                    composition = (count/(len(zz[i])-(q)))*100
+                denom = len(zz[i]) - q
+                if denom > 0:
+                    composition = (count / denom) * 100
+                else:
+                    composition = 0
                 cc.append(composition)
         dd.append(cc)
     df3 = pd.DataFrame(dd)
@@ -87,6 +93,10 @@ def prediction(inputfile1, inputfile2, model,out):
     
     data_test1 = np.loadtxt(file_name, delimiter=',')
     data_test2 = np.loadtxt(file_name3, delimiter=',')
+    if data_test1.ndim == 1:
+        data_test1 = data_test1.reshape(1, -1)
+    if data_test2.ndim == 1:
+        data_test2 = data_test2.reshape(1, -1)
     data_test3 = np.concatenate([data_test1,data_test2], axis=1)
     X_test = data_test3
     y_p_score1=clf.predict_proba(X_test)
@@ -324,7 +334,7 @@ if Model==1:
     
     os.system("perl -pi -e 's/,$//g' seq.aac")
     os.system("perl -pi -e 's/,$//g' seq.dpc")
-    prediction('seq.aac', 'seq.dpc', 'model/toxinpred3.0_model.pkl','seq.pred')
+    prediction('seq.aac', 'seq.dpc', nf_path + '/model/toxinpred3.0_model.pkl','seq.pred')
     class_assignment('seq.pred',Threshold,'seq.out')
     df1 = pd.DataFrame(seqid)
     df2 = pd.DataFrame(seq)
@@ -352,7 +362,7 @@ else:
     os.system("perl -pi -e 's/,$//g' seq.aac")
     dpc_comp(seq,'seq.dpc')
     os.system("perl -pi -e 's/,$//g' seq.dpc")
-    prediction('seq.aac', 'seq.dpc', 'model/toxinpred3.0_model.pkl','seq.pred')
+    prediction('seq.aac', 'seq.dpc', nf_path + '/model/toxinpred3.0_model.pkl','seq.pred')
     os.system("perl " + merci + " -p " + "Sequence_1" +  " -i " + motifs_p + " -o merci_p.txt")
     os.system("perl " + merci + " -p " + "Sequence_1" +  " -i " + motifs_n + " -o merci_n.txt")
     MERCI_Processor_p('merci_p.txt','merci_output_p.csv',seqid)
