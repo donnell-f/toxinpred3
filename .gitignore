@@ -1,2 +1,3 @@
-# Ignore the unzipped model file
+# Ignore the unzipped model file and __MACOSX
 model/toxinpred3.0_model.pkl
+model/__MAXOSX
